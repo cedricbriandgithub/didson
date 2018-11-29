@@ -11,11 +11,12 @@ getUsername <- function(){
 }
 require(stringr)
 set.seed(1235)
-if(getUsername() == 'cedric.briand') setwd("F:/workspace/p/didson/bayesien")
-datawd<-"F:/workspace/pdata/didson/bayesien/"
-load(str_c(datawd,"donnees/d3ejb.Rdata"))
-load(str_c(datawd,"donnees/dj.Rdata"))
-load(str_c(datawd,"donnees/dat_h.Rdata"))
+if(getUsername() == 'cedric.briand') setwd("C:/Users/cedric.briand/Documents/GitHub/didson/") 
+source("script/fonctions.R")
+datawd<-"C:/Users/cedric.briand/Documents/GitHub/didson/data/" 
+load(str_c(datawd,"d3ejb.Rdata"))
+load(str_c(datawd,"dj.Rdata"))
+load(str_c(datawd,"dat_h.Rdata"))
 
 ##################################
 # VARIABLES TIREES DE d3ejb
@@ -40,7 +41,6 @@ p_surface[is.na(d3ejb$area_migration_frame)&d3ejb$pdebit4>0,7]<-1 # passage par 
 # simplification
 ###############
 surface2<-cbind(d3ejb$area_intersect,d3ejb$area_migration_frame)
-surface2[is.na(surface2[,2]),]<-0
 p_surface2<-surface2[,1]/surface2[,2]
 p_surface2[is.na(p_surface2)]<-0
 #p_surface[,]<-1

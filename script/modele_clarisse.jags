@@ -17,7 +17,7 @@ model
 		for(t in 1:n_tranche) # par tranche de 30 minutes
 		{
 			N_t_continu[t] <- N_jour[jour[t]] * p_t[horaire[t]] 
-			N_t[t] ~ dpois(N_t_continu[t])
+			N_t[t] ~ dpois(N_t_continu[t]) # on passe par une poisson pour avoir nombres entiers
 			#nombre arrivant au droit du barrage a chaque 30 minutes
 			N4_t[t] ~ dbin(pdebit4[t],N_t[t]) # nombre se presentant a la vanne 4
 			# discretisation et tirage processus aleatoire
@@ -34,7 +34,7 @@ model
 		#af ~ dnorm(0,0.1)
 		# pour tirer des proportions horaires
 		for (h in 1:32){
-			a[h]~dgamma(1,1)
+			a[h]~dgamma(1,1) # dgamma proportion positive
 			p_t[h]<-a[h]/sum(a[])
 		}
 		#p_tau[1:4] ~ ddirch(p_dirichlet_tau[1:4])

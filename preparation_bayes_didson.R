@@ -20,11 +20,11 @@ fin<-str_c(CY,"-05-01 00:00:00")
 datedebut<-str_c(CY-1,"-09-01")
 datefin<-str_c(CY,"-05-01")
 graphics.off()
-setwd("F:/workspace/p/didson/")
-datawd<-"F:/workspace/pdata/didson/rapport/data/" 
+setwd("C:/workspace/didson/")
+datawd<-"C:/workspace/didson/data/" 
 datawdb<-"F:/workspace/pdata/didson/bayesien/donnees/" 
 datawdy<-str_c(datawd,CY,"/")
-imgwd<-"F:/workspace/p/didson/image/"
+imgwd<-"C:/workspace/p/didson/image/"
 imgwdy<-str_c(imgwd,CY,"/")
 tabwdy<-str_c("F:/workspace/p/didson/table/",CY,"/")
 load(file=str_c(datawdy,"d3ej.Rdata"))

@@ -3,7 +3,7 @@
 #
 # Author: Clarisse Boulenger, Briand Cedric (IAV), 
 ###############################################################################
-# celui là fonctionne
+# 
 model
 {
 
@@ -34,7 +34,7 @@ for (tau in 1:n_tau){
 		N_total<-sum(N_jourtotal[])
 		for(ijour in 1:n_jour)
 		{
-		N_jourtotal[ijour]<-sum(N_jour[ijour,])
+		N_jourtotal[ijour]<-sum(N_jour[ijour,]) # somme de toutes les classes de taille
 		}
 	 
 	for(tau in 1:n_tau){
@@ -43,12 +43,12 @@ for (tau in 1:n_tau){
 		{
 			
 			N_jour[ijour,tau] ~ dgamma(gamma_a[tau], gamma_b[tau]) # nombre d'anguilles du jour
-			
+			# possibilité d'avoir des migrations différentes en fonction du jour
 		}
        
 		for(t in 1:n_tranche) # par tranche de 30 minutes
 		{
-			N_t_continu[t,tau] <- N_jour[jour[t],tau] * p_t[horaire[t]] 
+			N_t_continu[t,tau] <- N_jour[jour[t],tau] * p_t[horaire[t]] # effet horaire meme en fonction de la classe de taille
 			N_t[t,tau] ~ dpois(N_t_continu[t,tau])
 			#nombre arrivant au droit du barrage a chaque 30 minutes
 			N4_t[t,tau] ~ dbin(pdebit4[t],N_t[t,tau]) # nombre se presentant a la vanne 4
@@ -61,8 +61,8 @@ for (tau in 1:n_tau){
 		gamma_b[tau] <- mu_gamma[tau] / sigma_gamma[tau]^2 # rate	
 	}# tau
 	for (i in 1:n_i){
-			N4_tprim[i]<-N4_t[tranche[i],cdt[i]]
-			efficaciteprim[i]<-efficacite[cdt[i],cdd[i]]
+			N4_tprim[i]<-N4_t[tranche[i],cdt[i]] # cdt classe de taille dans nos donnees
+			efficaciteprim[i]<-efficacite[cdt[i],cdd[i]] # efficacité par classe de taille et classe de distance
 			 N04prim_t[i] ~ dbin(p_surface[i], N4_tprim[i])	
 			 #*efficaciteprim[i]
 	} #i	 						

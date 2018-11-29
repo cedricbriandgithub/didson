@@ -3,13 +3,16 @@
 # Author: Beaulaton Laurent (Onema), Briand Cedric (IAV), Clarisse Boulenger (INRA)
 ###############################################################################
 
+
+# chargement des donneees et du modele
+source("script/chargement_donnees.R")
+
 # chargement des bibliotheques, donnees et fonctions
 require(jagsUI)
 require(ggmcmc) #graphique bayesien
 
-# chargement des donneees et du modele
-#source("script/chargement_donnees.R")
-source("script/fonctions.R")
+
+
 
 # Lancement du modele JAGS
 #model.inits <-
@@ -30,14 +33,14 @@ model = jags(data=data_list,
 		model.file = "script/modele_clarisse.jags",
 		n.chains = 3, #1
 		n.thin = 5, # nombre d'itérations enregistrée
-		n.burnin =  40000 , # 40000 
-		n.iter = 60000, # 60000
+		n.burnin = 40000  , #  160000
+		n.iter = 60000, # 200000
 		parameters.to.save=parameters)
 #save(model,file=str_c(datawd,"modele_clarisse.Rdata"))
 
 print(model)
 summary(model)
-traceplot(model,parameter="N_total")
+traceplot(model,parameter="N_total") # converge rhat < 1.1 mettre plus d'itérations
 whiskerplot(model, parameters="N_jour")
 sum(model$q50$N_jour)
 whiskerplot(model, parameters="p_t")

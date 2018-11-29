@@ -1,0 +1,55 @@
+# Analyse bayesienne des donnees DIDSON de la Vilaine
+# modele bayesien (format jags)
+#
+# Author: 
+###############################################################################
+# vers un modèle complexe
+# TODO creer les donnees en forme matrice (long)
+# tester avec le truc tout simple
+# complexifier le modèle
+model
+{
+
+##### Efficacité
+# coder des effets fixes sous la forme alpha_tau alpha_delta avec sum(alpha_tau)
+        for (tau in 1:(n_tau-1)){	
+          for (delta in 1:n_delta){ 
+          			efficacite[tau,delta]<-ilogit(af+alpha[delta]+beta[tau])
+          			# ilogit pour ramener entre 0 et 1
+          }
+        }
+# Pour les plus grandes
+        efficacite[4,1]<-1
+        for (delta in 2:n_delta){ 
+          			efficacite[4,delta]<-ilogit(af+alpha[delta]+beta[4])
+
+          }
+          af ~ dnorm(0,0.1)
+for (tau in 1:n_tau){
+			betaprim[tau]~dnorm(0,0.1) # non informatif
+			beta[tau]<-betaprim[tau]-mean(betaprim[]) # crochet pour dire l'ensemble du vecteur
+			# a tester en faisant la somme, ça revient à sum(alpha[tau])=0
+		}
+		for(delta in 1:n_delta){
+			alphaprim[delta]~dnorm(0,0.1) # non informatif
+			alpha[delta]<-alphaprim[delta]-mean(alphaprim[]) 
+		}
+############################""		
+# Nombre de poissons
+	  
+
+       
+		for(t in 1:n_tranche) {
+			for (tau in 1:n_tau){
+				for (delta in 1:n_delta){
+			N4_t_did_obs[t,tau,delta] ~ dbin(efficacite[tau,delta]*p_surface[t,delta], N4_t[t,tau,delta])
+			}
+			N4_t[t,tau]<-sum(N4_t[t,tau,])
+			# N4_t[t,tau]~dbin(pdebit4[t],N_t[t,tau]
+			# N_t[t,tau]~gamma(a[tau],b[tau])
+			# N_jour[j,tau]<-sum(Nt[tau,jour[t]) # ??? pas bon
+			 		 						
+		}#n_tranche		
+			
+# TODO parametriser a et b
+}

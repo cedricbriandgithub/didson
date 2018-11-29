@@ -1,0 +1,76 @@
+# Analyse bayesienne des donnees DIDSON de la Vilaine
+# modele bayesien (format jags)
+#
+# Author: Beaulaton Laurent (Onema), Briand Cedric (IAV)
+###############################################################################
+#Celui la ne marchait pas, premier essai avec Clarisse
+model
+{
+	# Vraisemblance
+	  
+		for(ijour in 1:n_jour)
+		{
+			N_jour[ijour] ~ dgamma(gamma_a, gamma_b) # nombre d'anguilles du jour
+			
+		}
+		# coder des effets fixes sous la forme alpha_tau alpha_delta avec sum(alpha_tau)
+        for (tau in 1:(n_tau-1)){	
+          for (delta in 1:n_delta){ 
+          			efficacite[tau,delta]<-ilogit(af+alpha[delta]+beta[tau])
+          			# ilogit pour ramener entre 0 et 1
+          }
+        }
+# Pour les plus grandes
+        efficacite[4,1]<-1
+        for (delta in 2:n_delta){ 
+          			efficacite[4,delta]<-ilogit(af+alpha[delta]+beta[4])
+
+          }
+       
+		for(t in 1:n_tranche) # par tranche de 30 minutes
+		{
+			N_t_continu[t] <- N_jour[jour[t]] * p_t[horaire[t]] 
+			#nombre arrivant au droit du barrage a chaque 30 minutes
+			N4_t_continu[t] <- N_t_continu[t] * pdebit4[t] # nombre se presentant a la vanne 4
+			N4_t[t] ~ dpois(N4_t_continu[t]) # discretisation et tirage processus aleatoire
+			# (tau-1)*(n_delta)+delta
+			# permet d'avoir delta entre 1 et 4 en bouclant sur tau
+        	for (tau in 1:n_tau){	
+         		 for (delta in 1:n_delta){ 
+          			surface_tau[t,(tau-1)*(n_delta)+delta]<-p_tau[tau]*p_surface[t,delta]
+          		}
+        	}			
+			surface_tau[t,25]<-p_surface[t,7] # surface restante non analysee
+			N4_t_tau[t,1:25]~dmulti(surface_tau[t,1:25],N4_t[t]) # nombre d'anguilles par classe de taille matrice (i*4)			
+		
+			for (tau in 1:n_tau){			     
+			    for (delta in 1:n_delta){ 
+			     N04prim_t_tau_delta[t,(tau-1)*n_delta+delta] ~ dbin(efficacite[tau,delta], N4_t_tau[t,(tau-1)*n_delta+delta]) # je ne rentre pas dans la 25 Ã¨me
+				}# delta
+			}# tau				 						
+		}#n_tranche
+
+		
+	# Prior
+		#mu_gamma ~ dgamma(1,0.0001)
+		mu_gamma ~ dunif(1,100000)
+		sigma_gamma ~ dgamma(1,0.00001)
+		gamma_a <- mu_gamma^2 / sigma_gamma^2 # shape
+		gamma_b <- mu_gamma / sigma_gamma^2 # rate	
+		af ~ dnorm(0,0.1)
+		p_t[1:32] ~ ddirch(p_dirichlet_t[1:32])
+		p_tau[1:4] ~ ddirch(p_dirichlet_tau[1:4])
+		# la somme des effets fixes doit être égale à zero
+		for (tau in 1:n_tau){
+			betaprim[tau]~dnorm(0,0.1) # non informatif
+			beta[tau]<-betaprim[tau]-mean(betaprim[]) # crochet pour dire l'ensemble du vecteur
+			# a tester en faisant la somme, ça revient à sum(alpha[tau])=0
+		}
+		for(delta in 1:n_delta){
+			alphaprim[delta]~dnorm(0,0.1) # non informatif
+			alpha[delta]<-alphaprim[delta]-mean(alphaprim[]) 
+		}
+		
+		# penser pour un effet fixe à rajouter un intercept 
+		
+}

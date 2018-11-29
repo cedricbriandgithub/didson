@@ -7,24 +7,24 @@
 model
 {
 
-##### Efficacité###########################################################
-        for (tau in 1:(n_tau-1)){	
+##### Efficacit?###########################################################
+        for (tau in 1:(n_tau-1){	
           for (delta in 1:n_delta){ 
           			efficacite[tau,delta]<-ilogit(af+alpha[delta]+beta[tau])
           			# ilogit pour ramener entre 0 et 1
           }
         }
 # Pour les plus grandes
-        efficacite[4,1]<-1
+       efficacite[4,1]<-0.999
         for (delta in 2:n_delta){ 
-          			efficacite[4,delta]<-ilogit(af+alpha[delta]+beta[4])
+         		efficacite[4,delta]<-ilogit(af+alpha[delta]+beta[4])
 
           }
           af ~ dnorm(0,0.1)
 for (tau in 1:n_tau){
 			betaprim[tau]~dnorm(0,0.1) # non informatif
 			beta[tau]<-betaprim[tau]-mean(betaprim[]) # crochet pour dire l'ensemble du vecteur
-			# a tester en faisant la somme, ça revient à sum(beta[tau])=0
+			# a tester en faisant la somme, ?a revient ? sum(beta[tau])=0
 		}
 		for(delta in 1:n_delta){
 			alphaprim[delta]~dnorm(0,0.1) # non informatif
@@ -43,13 +43,13 @@ for (tau in 1:n_tau){
 		{
 			
 			N_jour[ijour,tau] ~ dgamma(gamma_a[tau], gamma_b[tau]) # nombre d'anguilles du jour
-			# possibilité d'avoir des migrations différentes en fonction du jour
+			# possibilit? d'avoir des migrations diff?rentes en fonction du jour
 		}
        
 		for(t in 1:n_tranche) # par tranche de 30 minutes
 		{
 			N_t_continu[t,tau] <- N_jour[jour[t],tau] * p_t[horaire[t]] # effet horaire meme en fonction de la classe de taille
-			N_t[t,tau] ~ dpois(N_t_continu[t,tau])
+			N_t[t,tau] <- round(N_t_continu[t,tau])
 			#nombre arrivant au droit du barrage a chaque 30 minutes
 			N4_t[t,tau] ~ dbin(pdebit4[t],N_t[t,tau]) # nombre se presentant a la vanne 4
 			# discretisation et tirage processus aleatoire
@@ -61,9 +61,8 @@ for (tau in 1:n_tau){
 		gamma_b[tau] <- mu_gamma[tau] / sigma_gamma[tau]^2 # rate	
 	}# tau
 	for (i in 1:n_i){
-			N4_tprim[i]<-N4_t[tranche[i],cdt[i]] # cdt classe de taille dans nos donnees
-			efficaciteprim[i]<-efficacite[cdt[i],cdd[i]] # efficacité par classe de taille et classe de distance
-			 N04prim_t[i] ~ dbin(p_surface[i], N4_tprim[i])	
+			N4_tprim[i]~dbin(p_surface[i],N4_t[tranche[i],cdt[i]]) # cdt classe de taille dans nos donnees
+			N04prim_t[i] ~ dbin(efficacite[cdt[i],cdd[i]],N4_tprim[i])	
 			 #*efficaciteprim[i]
 	} #i	 						
 #  proportions horaires

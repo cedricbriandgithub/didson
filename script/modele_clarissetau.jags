@@ -15,7 +15,7 @@ model
           }
         
 # Pour les plus grandes
-        efficacite[4]<-0.999
+        efficacite[4]<-0.999 # 1 pas possible pas accepter par la binomiale
 
           af ~ dnorm(0,0.1) # intercept relation efficacité classe de taille
           

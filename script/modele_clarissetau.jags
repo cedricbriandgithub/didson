@@ -1,0 +1,70 @@
+# Analyse bayesienne des donnees DIDSON de la Vilaine
+# modele bayesien (format jags)
+#
+# Author: Clarisse Boulenger, Briand Cedric (IAV), 
+###############################################################################
+# 
+model
+{
+
+##### Efficacit?###########################################################
+        for (tau in 1:(n_tau-1)){	
+          
+          			efficacite[tau]<-ilogit(af+beta[tau])
+          			# ilogit pour ramener entre 0 et 1
+          }
+        
+# Pour les plus grandes
+        efficacite[4]<-0.999
+
+          af ~ dnorm(0,0.1) # intercept relation efficacité classe de taille
+          
+          
+for (tau in 1:n_tau){
+			betaprim[tau]~dnorm(0,0.1) # non informatif
+			beta[tau]<-betaprim[tau]-mean(betaprim[]) # crochet pour dire l'ensemble du vecteur
+			# a tester en faisant la somme, ?a revient ? sum(beta[tau])=0
+		}
+
+############################	
+		N_total<-sum(N_jourtotal[])
+		for(ijour in 1:n_jour)
+		{
+		N_jourtotal[ijour]<-sum(N_jour[ijour,]) # somme de toutes les classes de taille
+		}
+	 
+	for(tau in 1:n_tau){
+	
+		for(ijour in 1:n_jour)
+		{
+			
+			N_jour[ijour,tau] ~ dgamma(gamma_a[tau], gamma_b[tau]) # nombre d'anguilles du jour
+			# possibilit? d'avoir des migrations diff?rentes en fonction du jour
+		}
+       
+		for(t in 1:n_tranche) # par tranche de 30 minutes
+		{
+			N_t_continu[t,tau] <- N_jour[jour[t],tau] * p_t[horaire[t]] # effet horaire meme en fonction de la classe de taille
+			N_t[t,tau] ~ dpois(N_t_continu[t,tau])
+			#nombre arrivant au droit du barrage a chaque 30 minutes
+			N4_t[t,tau] ~ dbin(pdebit4[t],N_t[t,tau]) # nombre se presentant a la vanne 4
+			# discretisation et tirage processus aleatoire
+		}# n_tranche
+
+		mu_gamma[tau] ~ dunif(1,100000)
+		sigma_gamma[tau] ~ dgamma(1,0.00001)
+		gamma_a[tau] <- mu_gamma[tau]^2 / sigma_gamma[tau]^2 # shape
+		gamma_b[tau] <- mu_gamma[tau] / sigma_gamma[tau]^2 # rate	
+	}# tau
+	for (i in 1:n_i){
+
+			N4_tprim[i]~dbin(p_surface[i],N4_t[tranche[i],cdt[i]]) # cdt classe de taille dans nos donnees
+			N04prim_t[i] ~ dbin(efficacite[cdt[i]],N4_tprim[i])	
+	} #i	 						
+#  proportions horaires
+	for (h in 1:32){
+			a[h]~dgamma(1,1)
+			p_t[h]<-a[h]/sum(a[])
+	}# h
+		
+}

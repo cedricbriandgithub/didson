@@ -1,1 +1,3 @@
 # didson
+
+bayesian stuff 

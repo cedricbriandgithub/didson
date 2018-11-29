@@ -43,7 +43,7 @@ horaire = d3ejbmtau$hourm
 # somme des surfaces
 
 p_surface<-d3ejbmtau$area_intersect/d3ejbmtau$area_migration_frame
-p_surface[is.na(p_surface)]<-0+0.00001
+p_surface[is.na(p_surface)]<-0
 tranche<-d3ejbmtau$tranche
 cdt<-match(d3ejbmtau$tau,unique(d3ejbmtau$tau))
 cdd<-match(d3ejbmtau$delta,unique(d3ejbmtau$delta))

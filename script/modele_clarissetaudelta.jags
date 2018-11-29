@@ -8,7 +8,7 @@ model
 {
 
 ##### Efficacit?###########################################################
-        for (tau in 1:(n_tau-1){	
+        for (tau in 1:(n_tau-1)){	
           for (delta in 1:n_delta){ 
           			efficacite[tau,delta]<-ilogit(af+alpha[delta]+beta[tau])
           			# ilogit pour ramener entre 0 et 1

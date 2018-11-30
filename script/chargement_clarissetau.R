@@ -24,25 +24,25 @@ load(str_c(datawd,"d3ejbmtau.Rdata"))
 
 
 #normalement il ne peut pas y avoir d'anguilles quand pdebit4=0
-d3ejbmtautau[d3ejbmtautau$pdebit4==0&!is.na(d3ejbmtautau$number),"number"]<-NA
+d3ejbmtau[d3ejbmtau$pdebit4==0&!is.na(d3ejbmtau$number),"number"]<-NA
 # pour prendre un subset
-d3ejbmtautau<-d3ejbmtautau[d3ejbmtautau$jour%in%c(1:50),]
+d3ejbmtau<-d3ejbmtau[d3ejbmtau$jour%in%c(1:50),]
 d3ejb<-d3ejb[d3ejb$jour%in%c(1:50),]
 ##################################
-# VARIABLES TIREES DE d3ejbmtautau
+# VARIABLES TIREES DE d3ejbmtau
 ##################################
-n_i=nrow(d3ejbmtautau)
-n_jour = max(d3ejbmtautau$jour)
+n_i=nrow(d3ejbmtau)
+n_jour = max(d3ejbmtau$jour)
 n_tranche = nrow(d3ejb)
-pdebit4 = d3ejbmtautau$pdebit4
-jour = d3ejbmtautau$jour
-horaire = d3ejbmtautau$hourm
+pdebit4 = d3ejbmtau$pdebit4
+jour = d3ejbmtau$jour
+horaire = d3ejbmtau$hourm
 # p_surface represente pour chaque petit polygone decoupee sur le faisceau la proportion de surface
 #echantillonnee par le didson
 # il y a des valeurs manquantes qui sont remises.
 # somme des surfaces
 
-p_surface<-d3ejbmtautau$surface/d3ejbmtautau$area_migration_frame
+p_surface<-d3ejbmtau$area_intersect/d3ejbmtau$area_migration_frame
 p_surface[is.na(p_surface)]<-0
 tranche<-d3ejbmtau$tranche
 cdt<-match(d3ejbmtau$tau,unique(d3ejbmtau$tau))

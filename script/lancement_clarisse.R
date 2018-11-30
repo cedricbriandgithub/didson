@@ -36,7 +36,7 @@ model = jags(data=data_list,
 		n.burnin = 40000  , #  160000
 		n.iter = 60000, # 200000
 		parameters.to.save=parameters)
-#save(model,file=str_c(datawd,"modele_clarisse.Rdata"))
+#save(model,file=str_c(datawd,"modele_clarisse1.Rdata"))
 
 print(model)
 summary(model)

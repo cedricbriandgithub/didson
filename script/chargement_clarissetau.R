@@ -26,8 +26,8 @@ load(str_c(datawd,"d3ejbmtau.Rdata"))
 #normalement il ne peut pas y avoir d'anguilles quand pdebit4=0
 d3ejbmtau[d3ejbmtau$pdebit4==0&!is.na(d3ejbmtau$number),"number"]<-NA
 # pour prendre un subset
-d3ejbmtau<-d3ejbmtau[d3ejbmtau$jour%in%c(1:50),]
-d3ejb<-d3ejb[d3ejb$jour%in%c(1:50),]
+#d3ejbmtau<-d3ejbmtau[d3ejbmtau$jour%in%c(1:20),]
+#d3ejb<-d3ejb[d3ejb$jour%in%c(1:20),]
 ##################################
 # VARIABLES TIREES DE d3ejbmtau
 ##################################

@@ -15,9 +15,13 @@ require(ggmcmc) #graphique bayesien
 
 
 # Lancement du modele JAGS
-#model.inits <-
-#		list("N_jour"=init_N_jour,
-#				"N4_t"=N4_t_init)		
+model.inits <-
+  function(){list(
+
+    "N_t"=N_t_init,
+    "N4_t"=N4_t_init
+  )
+  }
 
 data_list<-list(n_jour = n_jour,
 		n_tranche = n_tranche,
@@ -27,12 +31,12 @@ data_list<-list(n_jour = n_jour,
 		N04prim_t_sum= N04prim_t_sum,
 		p_surface2=p_surface2)
 
-parameters<-c("N_total","N_jour","p_t","mu_gamma","sigma_gamma")
+parameters<-c("N_total","N_jour","p_t","E_gamma","CV_gamma")
 model = jags(data=data_list,
-		#inits = model.inits,
+		inits = model.inits,
 		model.file = "script/modele_clarisse.jags",
 		n.chains = 3, #1
-		n.thin = 5, # nombre d'itérations enregistrée
+		n.thin = 5, # nombre d'it?rations enregistr?e
 		n.burnin = 40000  , #  160000
 		n.iter = 60000, # 200000
 		parameters.to.save=parameters)
@@ -40,7 +44,7 @@ model = jags(data=data_list,
 
 print(model)
 summary(model)
-traceplot(model,parameter="N_total") # converge rhat < 1.1 mettre plus d'itérations
+traceplot(model,parameter="N_total") # converge rhat < 1.1 mettre plus d'it?rations
 whiskerplot(model, parameters="N_jour")
 sum(model$q50$N_jour)
 whiskerplot(model, parameters="p_t")

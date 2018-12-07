@@ -3,7 +3,11 @@
 #
 # Author: Clarisse Boulenger, Briand Cedric (IAV), 
 ###############################################################################
+<<<<<<< HEAD
 # celui la fonctionne
+=======
+# celui l? fonctionne
+>>>>>>> branch 'master' of https://github.com/cedricbriandgithub/didson
 model
 {
 	# Vraisemblance
@@ -26,19 +30,24 @@ model
 
 		
 	# Prior
-		#mu_gamma ~ dgamma(1,0.0001)
-		mu_gamma ~ dunif(1,100000)
-		sigma_gamma ~ dgamma(1,0.00001)
-		gamma_a <- mu_gamma^2 / sigma_gamma^2 # shape
-		gamma_b <- mu_gamma / sigma_gamma^2 # rate	
-		#af ~ dnorm(0,0.1)
+		log_E_gamma ~ dnorm(0,0.1)
+		E_gamma<-exp(log_E_gamma)
+		CV_gamma ~ dexp(1)
+		gamma_a <- 1/ CV_gamma^2 # shape
+		gamma_b <-1 / E_gamma*CV_gamma*CV_gamma # rate	
+		
 		# pour tirer des proportions horaires
 		for (h in 1:32){
 			a[h]~dgamma(1,1) # dgamma proportion positive
 			p_t[h]<-a[h]/sum(a[])
 		}
 		#p_tau[1:4] ~ ddirch(p_dirichlet_tau[1:4])
+<<<<<<< HEAD
 		# la somme des effets fixes doit etre  egale a zero		
 		# penser pour un effet fixe a rajouter un intercept 
+=======
+		# la somme des effets fixes doit ?tre ?gale ? zero		
+		# penser pour un effet fixe ? rajouter un intercept 
+>>>>>>> branch 'master' of https://github.com/cedricbriandgithub/didson
 		
 }

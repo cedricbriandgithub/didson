@@ -15,9 +15,13 @@ require(ggmcmc) #graphique bayesien
 
 
 # Lancement du modele JAGS
-#model.inits <-
-#		list("N_jour"=init_N_jour,
-#				"N4_t"=N4_t_init)		
+model.inits <-
+  function(){list(
+
+    "N_t"=N_t_init,
+    "N4_t"=N4_t_init
+  )
+  }
 
 data_list<-list(n_jour = n_jour,
 		n_tranche = n_tranche,
@@ -29,7 +33,7 @@ data_list<-list(n_jour = n_jour,
 
 parameters<-c("N_total","N_jour","N4_t","N04prim_t_sum","p_t","mu_gamma","sigma_gamma")
 model = jags(data=data_list,
-		#inits = model.inits,
+		inits = model.inits,
 		model.file = "script/modele_clarisse.jags",
 		n.chains = 3, #1
 		n.thin = 5, # nombre d'itérations enregistrée

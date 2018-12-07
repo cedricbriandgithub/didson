@@ -3,7 +3,7 @@
 #
 # Author: Clarisse Boulenger, Briand Cedric (IAV), 
 ###############################################################################
-# celui là fonctionne
+# celui la fonctionne
 model
 {
 	# Vraisemblance
@@ -38,7 +38,7 @@ model
 			p_t[h]<-a[h]/sum(a[])
 		}
 		#p_tau[1:4] ~ ddirch(p_dirichlet_tau[1:4])
-		# la somme des effets fixes doit être égale à zero		
-		# penser pour un effet fixe à rajouter un intercept 
+		# la somme des effets fixes doit etre  egale a zero		
+		# penser pour un effet fixe a rajouter un intercept 
 		
 }

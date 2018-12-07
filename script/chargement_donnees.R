@@ -51,7 +51,7 @@ p_surface2[is.na(p_surface2)]<-0
 # on prend la moyenne des effectifs de nuit
 hh<-dat_h[c(as.character(18:23),as.character(0:9)),1]
 p_dirichlet_t <- numeric(32)
-# on applique les effectifs horaires à chaque demie-heure
+# on applique les effectifs horaires ï¿½ chaque demie-heure
 for (i in 1:16){
 	p_dirichlet_t[i*2-1]<-hh[i]
 	p_dirichlet_t[i*2]<-hh[i]
@@ -91,7 +91,7 @@ n_delta<-6
 #######################################################
 # MATRICES DES EFFECTIFS
 ######################################################
-# je cherche les effectifs qui apparaissent comme des parenthèses dans d3ejb
+# je cherche les effectifs qui apparaissent comme des parenthï¿½ses dans d3ejb
 N04prim_t_tau_delta = d3ejb[,grep("]\\(",colnames(d3ejb))]
 #sum(N04prim_t_tau_delta,na.rm=TRUE) # 1885 ??? plus que 1880 sum(N4obs ?)=> 1743
 #sum(N04prim_t_tau_delta[!d3ejb$indexOK,],na.rm=TRUE) # 142 eels
@@ -99,9 +99,9 @@ N04prim_t_tau_delta[!d3ejb$indexOK,]<-NA
 #N04prim_t_tau_delta[pdebit4==0,]<-NA
 N04prim_t_tau_delta<-as.matrix(N04prim_t_tau_delta)
 
-load(file=str_c("F:/workspace/pdata/didson/rapport/data/2014/d3ej.Rdata"))
+load(file=str_c("C:/workspace/pdata/didson/rapport/data/2014/d3ej.Rdata"))
 d3ej$Nprimo4<-rowSums(d3ej[,c("drr_eelplus","drr_eelminus")],na.rm=TRUE)
-indexOK<-d3ej$dsf_fls_id==0&d3ej$ex==1 # effectifs utilisés pour extrapolation plus loin
+indexOK<-d3ej$dsf_fls_id==0&d3ej$ex==1 # effectifs utilisï¿½s pour extrapolation plus loin
 indexOK[is.na(indexOK)]<-FALSE
 d3ej$indexOK<-indexOK
 d3ej$Nprimo4[!indexOK]<-NA
@@ -139,13 +139,13 @@ init_N_jour[init_N_jour==0]<-50
 N4_t_init=d3ej$Nprimo4
 N4_t_init=round(N04prim_t_sum/p_surface2)+1
 N4_t_init[is.na(N4_t_init)]<-1 # les binomiales n'aiment pas les p=0 en init
-# proportions théoriques par heure
+# proportions thï¿½oriques par heure
 #pp_dirichlet_t<-p_dirichlet_t/sum(p_dirichlet_t)
 str(d3ejb)
 N_t_init<-round(N4_t_init/pdebit4)+1
 N_t_init[is.infinite(N_t_init)]<-1
 init_N_jour<-round(tapply(N_t_init,d3ejb$jour,sum,na.rm=TRUE))+1  # *pp_dirichlet_t[horaire]
-#problèmes de débit
+#problemes de dÃ©bit
 N04prim_t_sum[pdebit4==0&!is.na(N04prim_t_sum)]<-0
 #pdebit4[pdebit4==0]<-0.001
 #N04prim_t_tau_delta_init<-N04prim_t_tau_delta

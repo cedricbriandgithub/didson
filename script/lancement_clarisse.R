@@ -27,12 +27,12 @@ data_list<-list(n_jour = n_jour,
 		N04prim_t_sum= N04prim_t_sum,
 		p_surface2=p_surface2)
 
-parameters<-c("N_total","N_jour","p_t","mu_gamma","sigma_gamma")
+parameters<-c("N_total","N_jour","N4_t","N04prim_t_sum","p_t","mu_gamma","sigma_gamma")
 model = jags(data=data_list,
 		#inits = model.inits,
 		model.file = "script/modele_clarisse.jags",
 		n.chains = 3, #1
-		n.thin = 5, # nombre d'itérations enregistrée
+		n.thin = 5, # nombre d'itÃ©rations enregistrÃ©e
 		n.burnin = 40000  , #  160000
 		n.iter = 60000, # 200000
 		parameters.to.save=parameters)
@@ -40,9 +40,39 @@ model = jags(data=data_list,
 
 print(model)
 summary(model)
-traceplot(model,parameter="N_total") # converge rhat < 1.1 mettre plus d'itérations
+traceplot(model,parameter="N_total") # converge rhat < 1.1 mettre plus d'itÃ©rations
 whiskerplot(model, parameters="N_jour")
 sum(model$q50$N_jour)
+model$q50$mu_gamma
+model$q2.5$mu_gamma
+model$q97.5$mu_gamma
+model$q50$sigma_gamma
+model$q2.5$sigma_gamma
+model$q97.5$sigma_gamma
+
+
+# Essai pour comprendre ce qui ne va pas certains jours (estimation importante)
+open_in_excel <- function(some_df){
+  tFile<-paste("C:/temp/",gsub("\\\\","",tempfile(fileext=paste0(substitute(some_df), ".csv"),tmpdir="")),sep="")
+  write.table(some_df, tFile, row.names=F, sep=";", quote=F)
+  system(paste('open -a \"/ProgramData/Microsoft/Windows/Start Menu/Programs/Microsoft Office/Microsoft Excel 2010\"', tFile))
+}
+baddays<-which(model$q50$N_jour>15000)
+sss<-data.frame("tranche"=1:n_tranche,pdebit4,jour,horaire,p_surface2,N04prim_t_sum)
+par(mfrow=c(2,1))
+with(sss,plot(tranche,pdebit4))
+with(subset(sss,sss$jour%in%baddays),points(tranche,pdebit4,col="red"))
+with(sss,plot(tranche,p_surface2))
+with(subset(sss,sss$jour%in%baddays),points(tranche,p_surface2,col="red"))
+#with(sss,plot(tranche,horaire))
+x11()
+par(mfrow=c(2,1))
+with(subset(sss,sss$jour%in%baddays),plot(tranche,horaire,col=rainbow(max(d3ejb$hourm))))
+
+with(sss,plot(tranche,N04prim_t_sum,col="blue"))
+with(subset(sss,sss$jour%in%baddays),points(tranche,N04prim_t_sum,col="red"))
+#################################
+
 whiskerplot(model, parameters="p_t")
 #update(model, 1000) # pour bruler des valeurs supplementaires
 
